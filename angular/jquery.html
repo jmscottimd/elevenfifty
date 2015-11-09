@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Yay jquery</title>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+</head>
+
+<body>
+    <lable for="firstName">first name</label>
+    <br/>
+    <input type="text" name="firstName" id="nameInput">
+    <p> hello <span id="nameOutput"></span>!</p>
+    <script>
+    var nameInput = $('#nameInput').on('keyup',function(){
+      $('#nameOutput').text($(this).val());
+    });
+    </script>
+</body>
+
+</html>

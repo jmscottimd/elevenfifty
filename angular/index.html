@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>yay javascript</title>
+</head>
+
+<body>
+    <lable for="firstName">first name</label>
+    <br/>
+    <input type="text" name="firstName" id="nameInput">
+    <p> hello <span id="nameOutput"></span>!</p>
+    <script>
+    // var nameInput = document.getElementByID('nameInput');
+    var nameInput = document.querySelector('input[name=firstName]');
+    var nameOutput = document.getElementById('nameOutput');
+    nameInput.onkeyup = function(ev){
+    	// nameOutput.innerHTML.innerText = ev.currentTarget.value;
+    	nameOutput.innerHTML.innerText = this.value;
+    };
+    </script>
+</body>
+
+</html>
