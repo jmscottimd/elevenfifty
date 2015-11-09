@@ -19,7 +19,7 @@
       });
   }
 
-  NotesController['$inject'] = [' $state'];
+  NotesController['$inject'] = ['$state'];
   function NotesController($state) {
     $state.go('notes.form');
   }
