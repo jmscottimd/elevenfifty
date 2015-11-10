@@ -5,14 +5,22 @@ angular.module('notely')
 //handle crud operations against the server.
 NotesService.$inject = ['$http'];
 function NotesService($http){
-  this.notes = [];
+  var self = this;
+  self.notes = [];
 
 //get all notets from server
-this.fetch = function(){
+self.fetch = function(callback){
   $http.get('http://localhost:3000/notes')
   // on success
   .success(function(notesData){
     console.log(notesData);
+    self.notes = notesData;
+    if (callback){
+      callback();
+    }
   });
 };
+self.get = function(){
+  return self.notes;
+  };
 }
