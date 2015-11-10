@@ -1,19 +1,6 @@
 var express = require('express');
 var app = express();
-
-// db connection
-var db = require('mongoose');
-db.connect('mongodb://jmscottmongo:mosdef@ds041623.mongolab.com:41623/notelydb');
-
-//define schema
-var NoteSchema = db.Schema({
-  title: String,
-  body_html: String,
-  updated_at: { type: Date, default: Date.now }
-})
-
-//create a model
-var Note = db.model('Note', NoteSchema);
+var Note = require('./models/note');
 
 // allow CORS
 app.use(function(req, res, next){
