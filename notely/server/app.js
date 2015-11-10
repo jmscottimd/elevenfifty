@@ -15,6 +15,14 @@ res.json([
   {
     title: 'another note',
     body_html: 'woo hoo noob'
+  },
+  {
+    title: 'mooarr notes',
+    body_html: 'woo hoo!!'
+  },
+  {
+    title: 'reup my notes',
+    body_html: 'reup!!'
   }
 ]);
 });

@@ -4,12 +4,16 @@
   "description": "node backend for a note-taking app.",
   "main": "app.js",
   "scripts": {
-    "start":"node app.js",
+    "start": "node app.js",
+    "dev": "node_modules/.bin/supervisor app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "jmscott",
   "license": "MIT",
   "dependencies": {
     "express": "^4.13.3"
+  },
+  "devDependencies": {
+    "supervisor": "^0.9.1"
   }
 }
