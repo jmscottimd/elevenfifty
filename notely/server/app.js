@@ -41,8 +41,7 @@ app.post('/notes', function(req, res) {
 
 // update an existing note
 app.put('/notes/:id', function(req, res) {
-    Note.findOne({
-        _id: req.params.id
+    Note.findOne({_id: req.params.id
     }).then(function(note) {
         note.title = req.body.note.title;
         note.body = req.body.note.body_html;
