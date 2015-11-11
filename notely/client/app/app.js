@@ -5,7 +5,8 @@
   ]);
 
   function config($urlRouterProvider) {
-    $urlRouterProvider.otherwise('/notes');
+  	// notes-form is the default
+    $urlRouterProvider.otherwise('/notes/');
   }
 
   config['$inject'] = ['$urlRouterProvider'];
