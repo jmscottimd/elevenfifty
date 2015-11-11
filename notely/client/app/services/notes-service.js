@@ -1,6 +1,6 @@
 // reusable objects things that will always load
 angular.module('notely')
-.service('NotesService', NotesService);
+    .service('NotesService', NotesService);
 
 //NotesService
 //handle crud operations against the server.
@@ -32,20 +32,33 @@ function NotesService($http) {
     self.findById = function(noteId) {
         // look through 'self.notes' for a note with a matching  _id.
         for (var i = 0; i < self.notes.length; i++) {
-          if(self.notes[i]._id === noteId){
-            // return copy for editing purposes
-            return angular.copy(self.notes[i]);
-          }
+            if (self.notes[i]._id === noteId) {
+                // return copy for editing purposes
+                return angular.copy(self.notes[i]);
+            }
         }
-        return{};
+        return {};
     };
 
     //save a note
-    self.save = function(note) {
-        $http.post('http://localhost:3000/notes', {
+    self.create = function(note) {
+       var noteCreatePromise = $http.post('http://localhost:3000/notes', {
+            note: note
+        });
+       noteCreatePromise.then(function(response) {
+            self.notes.unshift(response.data.note);
+        });
+
+        return noteCreatePromise;
+
+    };
+    self.update = function() {
+        // implement this
+        $http.put('http://localhost:3000/notes', {
             note: note
         }).then(function(response) {
             self.notes.unshift(response.data.note);
         });
-    }
+    };
+
 }
