@@ -41,13 +41,28 @@ app.post('/notes', function(req, res) {
 
 // update an existing note
 app.put('/notes/:id', function(req, res) {
-    Note.findOne({_id: req.params.id
+    Note.findOne({
+        _id: req.params.id
     }).then(function(note) {
         note.title = req.body.note.title;
         note.body_html = req.body.note.body_html;
         note.save().then(function() {
             res.json({
                 message: 'you can haz change',
+                note: note
+            });
+        });
+    });
+});
+
+//delete an existing note
+app.delete('/notes/:id', function(req, res) {
+    Note.findOne({
+        _id: req.params.id
+    }).then(function(note) {
+        note.remove().then(function() {
+            res.json({
+                message: 'you can haz delete',
                 note: note
             });
         });
