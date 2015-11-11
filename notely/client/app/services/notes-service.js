@@ -29,7 +29,7 @@ function NotesService($http) {
         return self.notes;
     };
     // return a note by note id
-    self.findByID = function(noteID) {
+    self.findById = function(noteId) {
         // look through 'self.notes' for a note with a matching  _id.
         for (var i = 0; i < self.notes.length; i++) {
           if(self.notes[i]._id === noteId){
