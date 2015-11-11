@@ -59,11 +59,20 @@ function NotesService($http) {
                 body_html: note.body_html
             }
         });
-       
+        noteUpdatePromise.then(function(response) {
+            self.replaceNote(response.data.note);
+        });
         return noteUpdatePromise;
     };
 
     self.replaceNote = function(note) {
-       
+        // return a note by note id
+        // look through 'self.notes' for a note with a matching  _id.
+        for (var i = 0; i < self.notes.length; i++) {
+            if (self.notes[i]._id === note._id) {
+                self.notes[i] = note;
+            }
+        }
+
     };
-  }
+}
