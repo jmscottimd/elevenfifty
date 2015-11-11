@@ -44,7 +44,7 @@ app.put('/notes/:id', function(req, res) {
     Note.findOne({_id: req.params.id
     }).then(function(note) {
         note.title = req.body.note.title;
-        note.body = req.body.note.body_html;
+        note.body_html = req.body.note.body_html;
         note.save().then(function() {
             res.json({
                 message: 'you can haz change',
