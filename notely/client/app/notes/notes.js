@@ -44,7 +44,9 @@
         $scope.save = function() {
             // decide whether to call create or update
             if ($scope.note._id) {
-              NotesService.update($scope.note);
+              NotesService.update($scope.note).then(function(response){
+                $scope.note = angular.copy(response.data.note);
+              });
 
             } else {
                 NotesService.create($scope.note).then(function(response) {
