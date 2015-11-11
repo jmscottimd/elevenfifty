@@ -40,6 +40,7 @@
 
     function NotesFormController($scope, $state, NotesService) {
         $scope.note = NotesService.findById($state.params.noteId);
+        
         $scope.save = function() {
             NotesService.save($scope.note);
         };
