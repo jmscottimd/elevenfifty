@@ -42,23 +42,28 @@ function NotesService($http) {
 
     //save a note
     self.create = function(note) {
-       var noteCreatePromise = $http.post('http://localhost:3000/notes', {
+        var noteCreatePromise = $http.post('http://localhost:3000/notes', {
             note: note
         });
-       noteCreatePromise.then(function(response) {
+        noteCreatePromise.then(function(response) {
             self.notes.unshift(response.data.note);
         });
 
         return noteCreatePromise;
 
     };
-    self.update = function() {
-        // implement this
-        $http.put('http://localhost:3000/notes', {
-            note: note
-        }).then(function(response) {
-            self.notes.unshift(response.data.note);
+    self.update = function(note) {
+        var noteUpdatePromise = $http.put('http://localhost:3000/notes/' + note._id, {
+            note: {
+                title: note.title,
+                body_html: note.body_html
+            }
         });
+       
+        return noteUpdatePromise;
     };
 
-}
+    self.replaceNote = function(note) {
+       
+    };
+  }

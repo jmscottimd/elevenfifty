@@ -13,9 +13,9 @@
                 url: '/notes',
                 // resolve fetch before moving on
                 resolve: {
-                  notesLoaded: ['NotesService' ,function(NotesService){
-                    return NotesService.fetch();
-                  }]
+                    notesLoaded: ['NotesService', function(NotesService) {
+                        return NotesService.fetch();
+                    }]
                 },
                 templateUrl: '/notes/notes.html',
                 controller: NotesController
@@ -42,10 +42,17 @@
         $scope.note = NotesService.findById($state.params.noteId);
 
         $scope.save = function() {
-          // decide whether to call create or update
-            NotesService.create($scope.note).then(function(response) {
-              $state.go('notes.form', {noteId: response.data.note._id});
-            } );
+            // decide whether to call create or update
+            if ($scope.note._id) {
+              NotesService.update($scope.note);
+
+            } else {
+                NotesService.create($scope.note).then(function(response) {
+                    $state.go('notes.form', {
+                        noteId: response.data.note._id
+                    });
+                });
+            }
         };
     }
 })();
