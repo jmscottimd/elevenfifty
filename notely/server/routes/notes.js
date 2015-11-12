@@ -1,13 +1,6 @@
 var router = require('express').Router();
 var Note = require('../models/note');
-// Allow CORS and additional headers
-router.use(function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    next();
 
-});
 
 // List all notes
 router.get('/', function(req, res) {
