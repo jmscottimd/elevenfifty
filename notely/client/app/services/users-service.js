@@ -7,7 +7,7 @@ angular.module('notely')
 			});
 			// after create finishes
 			userPromise.then((response) => {
-				console.log(response.data.user);
+				console.log(response.data);
 			})
 			return userPromise;
 		}
