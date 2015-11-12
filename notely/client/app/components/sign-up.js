@@ -1,6 +1,21 @@
 angular.module('notely')
-.directive('signUp', function () {
-	return{
-		templateUrl: '/components/sign-up.html'
-	}
-});
+// new anon function syntax () =>
+.directive('signUp', ['UsersService', (UsersService) => {
+
+  class SignUpController {
+    constructor() {
+      this.user = {};
+    }
+    submit() {
+      UsersService.create(this.user);
+    }
+  }
+
+  return {
+    scope: {},
+    controller: SignUpController,
+    controllerAs: 'ctrl',
+    bindToController: true,
+    templateUrl: '/components/sign-up.html'
+  };
+}]);
