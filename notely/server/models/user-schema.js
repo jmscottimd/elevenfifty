@@ -1,4 +1,3 @@
-// pull in db connection
 var db = require('../config/db');
 
 var UserSchema = db.Schema({
@@ -14,10 +13,10 @@ UserSchema.pre('save', function(next) {
 });
 
 UserSchema.methods.toJSON = function() {
-	var object = this.toObject();
-	delete.object.password_digest;
-	delete.object.__v;
-	return object;
+  var object = this.toObject();
+  delete object.password_digest;
+  delete object.__v;
+  return object;
 };
 
 module.exports = UserSchema;
