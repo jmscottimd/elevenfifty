@@ -49,67 +49,6 @@ angular.module('notely')
 }]);
 'use strict';
 
-(function () {
-
-    angular.module('notely.notes', ['ui.router', 'textAngular']).config(notesConfig);
-
-    notesConfig['$inject'] = ['$stateProvider'];
-
-    function notesConfig($stateProvider) {
-        $stateProvider.state('notes', {
-            url: '/notes',
-            resolve: {
-                notesLoaded: ['NotesService', function (NotesService) {
-                    return NotesService.fetch();
-                }]
-            },
-            templateUrl: '/notes/notes.html',
-            controller: NotesController
-        }).state('notes.form', {
-            url: '/:noteId',
-            templateUrl: '/notes/notes-form.html',
-            controller: NotesFormController
-        });
-    }
-
-    NotesController.$inject = ['$state', '$scope', 'NotesService'];
-
-    function NotesController($state, $scope, NotesService) {
-        $scope.note = {};
-        $scope.notes = NotesService.get();
-    }
-
-    NotesFormController.$inject = ['$scope', '$state', 'NotesService'];
-
-    function NotesFormController($scope, $state, NotesService) {
-        $scope.note = NotesService.findById($state.params.noteId);
-
-        $scope.save = function () {
-            // Decide whether to call create or update...
-            if ($scope.note._id) {
-                NotesService.update($scope.note).then(function (response) {
-                    $scope.note = angular.copy(response.data.note);
-                });
-            } else {
-                NotesService.create($scope.note).then(function (response) {
-                    $state.go('notes.form', {
-                        noteId: response.data.note._id
-                    });
-                });
-            }
-        };
-
-        $scope['delete'] = function () {
-            NotesService['delete']($scope.note).then(function () {
-                $state.go('notes.form', { noteId: undefined });
-            });
-        };
-    }
-})();
-
-//
-'use strict';
-
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
@@ -146,7 +85,44 @@ angular.module('notely').service('AuthToken', ['$window', function ($window) {
 
   return new AuthToken();
 }]);
-"use strict";
+'use strict';
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+angular.module('notely').service('CurrentUser', ['$window', function ($window) {
+  var CurrentUser = (function () {
+    function CurrentUser() {
+      _classCallCheck(this, CurrentUser);
+
+      this.currentUser = JSON.parse($window.localStorage.getItem('currentUser'));
+    }
+
+    _createClass(CurrentUser, [{
+      key: 'set',
+      value: function set(user) {
+        this.currentUser = user;
+        $window.localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+      }
+    }, {
+      key: 'get',
+      value: function get() {
+        return this.currentUser || {};
+      }
+    }, {
+      key: 'clear',
+      value: function clear() {
+        this.currentUser = undefined;
+        $window.localStorage.removeItem('currentUser');
+      }
+    }]);
+
+    return CurrentUser;
+  })();
+
+  return new CurrentUser();
+}]);
 // reusable objects things that will always load
 'use strict';
 
@@ -244,7 +220,7 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-angular.module('notely').service('UsersService', ['$http', 'API_BASE', 'AuthToken', function ($http, API_BASE, AuthToken) {
+angular.module('notely').service('UsersService', ['$http', 'API_BASE', 'AuthToken', 'CurrentUser', function ($http, API_BASE, AuthToken, CurrentUser) {
 	var UsersService = (function () {
 		function UsersService() {
 			_classCallCheck(this, UsersService);
@@ -259,6 +235,7 @@ angular.module('notely').service('UsersService', ['$http', 'API_BASE', 'AuthToke
 				// after create finishes
 				userPromise.then(function (response) {
 					AuthToken.set(response.data.auth_token);
+					CurrentUser.set(response.data.user);
 				});
 				return userPromise;
 			}
@@ -269,6 +246,67 @@ angular.module('notely').service('UsersService', ['$http', 'API_BASE', 'AuthToke
 
 	return new UsersService();
 }]);
+'use strict';
+
+(function () {
+
+    angular.module('notely.notes', ['ui.router', 'textAngular']).config(notesConfig);
+
+    notesConfig['$inject'] = ['$stateProvider'];
+
+    function notesConfig($stateProvider) {
+        $stateProvider.state('notes', {
+            url: '/notes',
+            resolve: {
+                notesLoaded: ['NotesService', function (NotesService) {
+                    return NotesService.fetch();
+                }]
+            },
+            templateUrl: '/notes/notes.html',
+            controller: NotesController
+        }).state('notes.form', {
+            url: '/:noteId',
+            templateUrl: '/notes/notes-form.html',
+            controller: NotesFormController
+        });
+    }
+
+    NotesController.$inject = ['$state', '$scope', 'NotesService'];
+
+    function NotesController($state, $scope, NotesService) {
+        $scope.note = {};
+        $scope.notes = NotesService.get();
+    }
+
+    NotesFormController.$inject = ['$scope', '$state', 'NotesService'];
+
+    function NotesFormController($scope, $state, NotesService) {
+        $scope.note = NotesService.findById($state.params.noteId);
+
+        $scope.save = function () {
+            // Decide whether to call create or update...
+            if ($scope.note._id) {
+                NotesService.update($scope.note).then(function (response) {
+                    $scope.note = angular.copy(response.data.note);
+                });
+            } else {
+                NotesService.create($scope.note).then(function (response) {
+                    $state.go('notes.form', {
+                        noteId: response.data.note._id
+                    });
+                });
+            }
+        };
+
+        $scope['delete'] = function () {
+            NotesService['delete']($scope.note).then(function () {
+                $state.go('notes.form', { noteId: undefined });
+            });
+        };
+    }
+})();
+
+//
 'use strict';
 
 (function () {
