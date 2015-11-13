@@ -8,8 +8,10 @@ angular.module('notely')
     }
 
     login() {
-      UsersService.login(this.user);
-      $state.go('notes.form', {noteId: undefined });
+      UsersService.login(this.user).then(function(response) {
+      	 $state.go('notes.form', {noteId: undefined });
+      });
+     
     }
   }
 
