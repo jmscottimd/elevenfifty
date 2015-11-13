@@ -1,13 +1,16 @@
 angular.module('notely')
 // new anon function syntax () =>
-.directive('signUp', ['UsersService', (UsersService) => {
+.directive('signUp', ['$state', UsersService', (UsersService) => {
 
   class SignUpController {
     constructor() {
       this.user = {};
     }
     submit() {
-      UsersService.create(this.user);
+      UsersService.create(this.user).then(function(response) {
+        $state.go('notes.form', { noteId: undefined });
+      });
+
     }
   }
 

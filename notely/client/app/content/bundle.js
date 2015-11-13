@@ -19,46 +19,13 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-angular.module('notely')
-// new anon function syntax () =>
-.directive('signUp', ['UsersService', function (UsersService) {
-  var SignUpController = (function () {
-    function SignUpController() {
-      _classCallCheck(this, SignUpController);
-
-      this.user = {};
-    }
-
-    _createClass(SignUpController, [{
-      key: 'submit',
-      value: function submit() {
-        UsersService.create(this.user);
-      }
-    }]);
-
-    return SignUpController;
-  })();
-
-  return {
-    scope: {},
-    controller: SignUpController,
-    controllerAs: 'ctrl',
-    bindToController: true,
-    templateUrl: '/components/sign-up.html'
-  };
-}]);
-'use strict';
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
 angular.module('notely').directive('userLinks', function () {
   var UserLinksController = (function () {
-    function UserLinksController(CurrentUser) {
+    function UserLinksController(CurrentUser, AuthToken) {
       _classCallCheck(this, UserLinksController);
 
       this.CurrentUser = CurrentUser;
+      this.AuthToken = AuthToken;
     }
 
     _createClass(UserLinksController, [{
@@ -83,7 +50,7 @@ angular.module('notely').directive('userLinks', function () {
     controller: UserLinksController,
     controllerAs: 'ctrl',
     bindToController: true,
-    template: '\n      <div class="user-links">\n        <div ng-show="ctrl.signedIn()">\n          Signed in as {{ ctrl.user().name }}\n          |\n          <a href="#">Logout</a>\n        </div>\n      </div>\n    '
+    template: '\n      <div class="user-links">\n        <div ng-show="ctrl.signedIn()">\n          Signed in as {{ ctrl.user().name }}\n          |\n          <a href="#" ng-click="ctrl.Logout">Logout</a>\n        </div>\n      </div>\n    '
   };
 });
 'use strict';
