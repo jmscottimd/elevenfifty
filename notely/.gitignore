@@ -8,5 +8,5 @@ Thumbs.db
 .idea
 .env
 npm-debug.log
-bundle.js
+client/app/content/bundles.js
 key.txt
