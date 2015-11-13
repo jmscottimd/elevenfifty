@@ -1,24 +1,26 @@
 angular.module('notely')
-// new anon function syntax () =>
-.directive('signUp', ['$state', UsersService', (UsersService) => {
+    // new anon function syntax () =>
+    .directive('signUp', ['$state', 'UsersService', ($state, UsersService) => {
 
-  class SignUpController {
-    constructor() {
-      this.user = {};
-    }
-    submit() {
-      UsersService.create(this.user).then(function(response) {
-        $state.go('notes.form', { noteId: undefined });
-      });
+        class SignUpController {
+            constructor() {
+                this.user = {};
+            }
 
-    }
-  }
+            submit() {
+                UsersService.create(this.user).then(function(response) {
+                    $state.go('notes.form', {
+                        noteId: undefined
+                    });
+                });
 
-  return {
-    scope: {},
-    controller: SignUpController,
-    controllerAs: 'ctrl',
-    bindToController: true,
-    templateUrl: '/components/sign-up.html'
-  };
-}]);
+            }
+        }
+        return {
+            scope: {},
+            controller: SignUpController,
+            controllerAs: 'ctrl',
+            bindToController: true,
+            templateUrl: '/components/sign-up.html'
+        };
+    }]);

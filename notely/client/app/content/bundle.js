@@ -19,6 +19,77 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
+angular.module('notely').directive('signIn', ['$state', 'UsersService', function ($state, UsersService) {
+  var SignInController = (function () {
+    function SignInController() {
+      _classCallCheck(this, SignInController);
+
+      this.user = {};
+    }
+
+    _createClass(SignInController, [{
+      key: 'login',
+      value: function login() {
+        UsersService.login(this.user);
+        $state.go('notes.form', { noteId: undefined });
+      }
+    }]);
+
+    return SignInController;
+  })();
+
+  return {
+    scope: {},
+    controller: SignInController,
+    controllerAs: 'ctrl',
+    bindToController: true,
+    templateUrl: '/components/sign-in.html'
+  };
+}]);
+'use strict';
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+angular.module('notely')
+// new anon function syntax () =>
+.directive('signUp', ['$state', 'UsersService', function ($state, UsersService) {
+    var SignUpController = (function () {
+        function SignUpController() {
+            _classCallCheck(this, SignUpController);
+
+            this.user = {};
+        }
+
+        _createClass(SignUpController, [{
+            key: 'submit',
+            value: function submit() {
+                UsersService.create(this.user).then(function (response) {
+                    $state.go('notes.form', {
+                        noteId: undefined
+                    });
+                });
+            }
+        }]);
+
+        return SignUpController;
+    })();
+
+    return {
+        scope: {},
+        controller: SignUpController,
+        controllerAs: 'ctrl',
+        bindToController: true,
+        templateUrl: '/components/sign-up.html'
+    };
+}]);
+'use strict';
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
 angular.module('notely').directive('userLinks', function () {
   var UserLinksController = (function () {
     function UserLinksController(CurrentUser, AuthToken) {
@@ -305,30 +376,41 @@ var _createClass = (function () { function defineProperties(target, props) { for
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 angular.module('notely').service('UsersService', ['$http', 'API_BASE', 'AuthToken', 'CurrentUser', function ($http, API_BASE, AuthToken, CurrentUser) {
-	var UsersService = (function () {
-		function UsersService() {
-			_classCallCheck(this, UsersService);
-		}
+  var UsersService = (function () {
+    function UsersService() {
+      _classCallCheck(this, UsersService);
+    }
 
-		_createClass(UsersService, [{
-			key: 'create',
-			value: function create(user) {
-				var userPromise = $http.post(API_BASE + 'users', {
-					user: user
-				});
-				// after create finishes
-				userPromise.then(function (response) {
-					AuthToken.set(response.data.auth_token);
-					CurrentUser.set(response.data.user);
-				});
-				return userPromise;
-			}
-		}]);
+    _createClass(UsersService, [{
+      key: 'create',
+      value: function create(user) {
+        var userPromise = $http.post(API_BASE + 'users', {
+          user: user
+        });
+        userPromise.then(function (response) {
+          AuthToken.set(response.data.auth_token);
+          CurrentUser.set(response.data.user);
+        });
+        return userPromise;
+      }
+    }, {
+      key: 'login',
+      value: function login(user) {
+        var loginPromise = $http.post(API_BASE + 'sessions', {
+          user: user
+        });
+        loginPromise.then(function (response) {
+          AuthToken.set(response.data.auth_token);
+          CurrentUser.set(response.data.user);
+        });
+        return loginPromise;
+      }
+    }]);
 
-		return UsersService;
-	})();
+    return UsersService;
+  })();
 
-	return new UsersService();
+  return new UsersService();
 }]);
 'use strict';
 
@@ -340,6 +422,9 @@ angular.module('notely').service('UsersService', ['$http', 'API_BASE', 'AuthToke
     $stateProvider.state('sign-up', {
       url: '/sign-up',
       template: '<sign-up></sign-up>'
+    }).state('sign-in', {
+      url: '/sign-in',
+      template: '<sign-in></sign-in>'
     });
   };
 })();
