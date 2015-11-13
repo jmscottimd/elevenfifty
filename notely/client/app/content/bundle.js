@@ -93,9 +93,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 angular.module('notely').directive('userLinks', function () {
   var UserLinksController = (function () {
-    function UserLinksController(CurrentUser, AuthToken) {
+    function UserLinksController($state, CurrentUser, AuthToken) {
       _classCallCheck(this, UserLinksController);
 
+      this.$state = $state;
       this.CurrentUser = CurrentUser;
       this.AuthToken = AuthToken;
     }
@@ -110,19 +111,26 @@ angular.module('notely').directive('userLinks', function () {
       value: function signedIn() {
         return !!this.user()._id;
       }
+    }, {
+      key: 'logout',
+      value: function logout() {
+        this.CurrentUser.clear();
+        this.AuthToken.clear();
+        this.$state.go('sign-in');
+      }
     }]);
 
     return UserLinksController;
   })();
 
-  UserLinksController.$inject = ['CurrentUser'];
+  UserLinksController.$inject = ['$state', 'CurrentUser', 'AuthToken'];
 
   return {
     scope: {},
     controller: UserLinksController,
     controllerAs: 'ctrl',
     bindToController: true,
-    template: '\n      <div class="user-links">\n        <div ng-show="ctrl.signedIn()">\n          Signed in as {{ ctrl.user().name }}\n          |\n          <a href="#" ng-click="ctrl.Logout">Logout</a>\n        </div>\n      </div>\n    '
+    template: '\n      <div class="user-links">\n        <div ng-show="ctrl.signedIn()">\n          Signed in as {{ ctrl.user().name }}\n          |\n          <a href="#" ng-click="ctrl.logout()">Logout</a>\n        </div>\n      </div>\n    '
   };
 });
 'use strict';
@@ -137,8 +145,22 @@ angular.module('notely').directive('userLinks', function () {
         $stateProvider.state('notes', {
             url: '/notes',
             resolve: {
-                notesLoaded: ['NotesService', function (NotesService) {
-                    return NotesService.fetch();
+                notesLoaded: ['$state', '$q', '$timeout', 'NotesService', 'CurrentUser', function ($state, $q, $timeout, NotesService, CurrentUser) {
+                    var deferred = $q.defer();
+                    $timeout(function () {
+                        if (CurrentUser.isSignedIn()) {
+                            NotesService.fetch().then(function () {
+                                deferred.resolve();
+                            }, function () {
+                                deferred.reject();
+                                $state.go('sign-in');
+                            });
+                        } else {
+                            deferred.reject();
+                            $state.go('sign-in');
+                        }
+                    });
+                    return deferred.promise;
                 }]
             },
             templateUrl: '/notes/notes.html',
@@ -179,7 +201,9 @@ angular.module('notely').directive('userLinks', function () {
 
         $scope['delete'] = function () {
             NotesService['delete']($scope.note).then(function () {
-                $state.go('notes.form', { noteId: undefined });
+                $state.go('notes.form', {
+                    noteId: undefined
+                });
             });
         };
     }
@@ -271,6 +295,11 @@ angular.module('notely').service('CurrentUser', ['$window', function ($window) {
       value: function clear() {
         this.currentUser = undefined;
         $window.localStorage.removeItem('currentUser');
+      }
+    }, {
+      key: 'isSignedIn',
+      value: function isSignedIn() {
+        return !!this.get()._id;
       }
     }]);
 
