@@ -49,6 +49,45 @@ angular.module('notely')
 }]);
 'use strict';
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+angular.module('notely').directive('userLinks', function () {
+  var UserLinksController = (function () {
+    function UserLinksController(CurrentUser) {
+      _classCallCheck(this, UserLinksController);
+
+      this.CurrentUser = CurrentUser;
+    }
+
+    _createClass(UserLinksController, [{
+      key: 'user',
+      value: function user() {
+        return this.CurrentUser.get();
+      }
+    }, {
+      key: 'signedIn',
+      value: function signedIn() {
+        return !!this.user()._id;
+      }
+    }]);
+
+    return UserLinksController;
+  })();
+
+  UserLinksController.$inject = ['CurrentUser'];
+
+  return {
+    scope: {},
+    controller: UserLinksController,
+    controllerAs: 'ctrl',
+    bindToController: true,
+    template: '\n      <div class="user-links">\n        <div ng-show="ctrl.signedIn()">\n          Signed in as {{ ctrl.user().name }}\n          |\n          <a href="#">Logout</a>\n        </div>\n      </div>\n    '
+  };
+});
+'use strict';
+
 (function () {
 
     angular.module('notely.notes', ['ui.router', 'textAngular']).config(notesConfig);
