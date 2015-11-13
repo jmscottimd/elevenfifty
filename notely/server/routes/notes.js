@@ -34,9 +34,14 @@ router.put('/:id', function(req, res) {
         message: 'Your changes have been saved.',
         note: note
       });
-    });
+    },
+     function () {
+      res.send(500, 'Oops! There was a problem saving.');
+    }
+  );
   });
 });
+
 
 router.delete('/:id', function(req, res) {
   Note.findOne({ _id: req.params.id, user: req.user }).then(function(note) {
